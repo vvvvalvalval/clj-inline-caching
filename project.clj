@@ -1,4 +1,4 @@
-(defproject vvvvalvalval/clj-inline-caching "0.1.0-SNAPSHOT"
+(defproject vvvvalvalval/clj-inline-caching "0.2.0-SNAPSHOT"
   :description "Helpers for inline caching."
   :url "https://github.com/vvvvalvalval/clj-inline-caching"
   :license {:name "MIT"

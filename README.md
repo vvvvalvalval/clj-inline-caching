@@ -19,6 +19,8 @@ In production, the cache keys passed to the macros should simply never change.
 Note that the cache store is attached to the call site, *in the code*.
 Be careful when you refactor into something more generic.
 
+Currently only for Clojure JVM.
+
 ## Running benchmarks
 
 ```

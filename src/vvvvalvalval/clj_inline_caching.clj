@@ -7,14 +7,19 @@
   (let [n (count keys-vec)
         ks (for [i (range n)] (gensym (str "k" i)))
         cache-sym (vary-meta (gensym "cache") merge {:no-doc true})
-        _interned (intern *ns* cache-sym (Cell. nil))]
+        _interned (intern *ns* cache-sym (Cell.))]
     `(let [~@(interleave ks keys-vec)
            getv# ~get-v
            cell# (let [cell# ~cache-sym]
                    (if (instance? Cell cell#) ;; at this point, cell# may be clojure.lang.Var&Unbound when using AOT compilation.
                      cell#
-                     (impl/cache-var-miss (var ~cache-sym))))]
-       (impl/cache* cell# ~@ks getv#))
+                     (impl/cache-var-miss* (var ~cache-sym))))]
+       (impl/cache* cell#
+         ~@(cond
+             (= n 0) ()
+             (<= 1 n impl/max-arity) ks
+             (< impl/max-arity n) [(vec ks)])
+         getv#))
     ))
 
 (defmacro call
@@ -29,8 +34,5 @@
         ksyms (for [i (range n)] (gensym (str "k" i)))]
     `(let [~@(interleave ksyms args1)]
        ((cached
-          ~(cond
-             (= n 0) [`nil]
-             (<= 1 n impl/max-arity) (vec ksyms)
-             (< impl/max-arity n) [(vec ksyms)])
+          ~(vec ksyms)
           (fn [] (~f ~@ksyms))) ~@args2))))
