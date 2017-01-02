@@ -12,7 +12,7 @@
   (ho0-manual i))
 
 (defn f0-ic [i]
-  (ic/call ho0 [] i))
+  ((ic/call ho0) i))
 
 (deftest arity-0
   (testing "arity 0"
@@ -36,7 +36,7 @@
     (let [c3 (random-vec)
 
           f3-ic (fn [i]
-                  (ic/call ho [c1 @a-c2 c3] i))]
+                  ((ic/call ho c1 @a-c2 c3) i))]
 
       (let [ho3-manual (ho c1 @a-c2 c3)
             f3-manual (fn [i]
@@ -66,8 +66,8 @@
     (let [x3 :x3
 
           f-ic (fn [x]
-                 (ic/call hobig
-                   [x1 @x2 x3 4 "x5" true \7 'x8 nil [] {}] x))]
+                 ((ic/call hobig
+                    x1 @x2 x3 4 "x5" true \7 'x8 nil [] {}) x))]
 
       (let [hobig-manual (hobig x1 @x2 x3 4 "x5" true \7 'x8 nil [] {})
             f-manual (fn [x]

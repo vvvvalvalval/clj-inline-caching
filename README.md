@@ -24,16 +24,14 @@ Currently only for Clojure JVM.
 ## Running benchmarks
 
 ```
-$ lein with-profile +bench uberjar && java -jar target/clj-inline-caching-0.1.0-SNAPSHOT-standalone.jar
+$ lein with-profile +bench uberjar && java -jar target/clj-inline-caching-VERSION-standalone.jar
 ```
 
 According to the benchmarks I've run so far, the overhead of dereferencing the generated Var is on the order of 10ns.
 
 ## TODO
 
-* tests
 * documentation
-* faster 0-arity case?
 
 ## License
 

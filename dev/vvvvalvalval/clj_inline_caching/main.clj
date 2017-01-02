@@ -8,7 +8,7 @@
   (let [ax (atom 0)
         y 1
         icf (fn []
-              (ic/call ds/f [@ax y] 2))]
+              ((ic/call ds/f @ax y) 2))]
     (assert (= (icf) ((ds/f @ax y) 2)))
     (assert (= (icf) ((ds/f @ax y) 2)))
 
@@ -29,7 +29,7 @@
   (get gd i))
 
 (defn w-inline-caching [i]
-  (ic/call g [c1 c2 c3] i))
+  ((ic/call g c1 c2 c3) i))
 
 (defn -main [& args]
   (test-correctness)

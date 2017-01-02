@@ -23,16 +23,11 @@
     ))
 
 (defmacro call
-  "Usage: (call f [x1 x2 ... xp] y1 y2 ... yq)
-  Has the same effect as calling ((f x1 x2 ... xp) y1 y2 ... yq),
-  except that the call to (f x1 x2 ...) is cached inline.
-
-  The presumption is that, outside of interactive development, x1 ... xp will always evaluate to the same values for a given site;
-  otherwise using this macro would be pointless (and unsafe wrt concurrency)."
-  [f args1 & args2]
-  (let [n (count args1)
-        ksyms (for [i (range n)] (gensym (str "k" i)))]
-    `(let [~@(interleave ksyms args1)]
-       ((cached
-          ~(vec ksyms)
-          (fn [] (~f ~@ksyms))) ~@args2))))
+  "Caches inline the invocation of f on the provided arguments.
+  Except during interactive development, the values of f and its arguments for a given call site should never change."
+  [f & args]
+  (let [f-sym (gensym "f")
+        arg-syms (repeatedly (count args) gensym)]
+    `(let [~f-sym ~f
+           ~@(interleave arg-syms args)]
+       (cached [~f-sym ~@arg-syms] (fn [] (~f-sym ~@arg-syms))))))
