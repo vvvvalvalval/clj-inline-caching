@@ -38,8 +38,10 @@
   "Caches inline the invocation of f on the provided arguments.
   Except during interactive development, the values of f and its arguments for a given call site should never change."
   [f & args]
-  (let [f-sym (gensym "f")
-        arg-syms (repeatedly (count args) gensym)]
-    `(let [~f-sym ~f
-           ~@(interleave arg-syms args)]
-       (cached [~f-sym ~@arg-syms] (fn [] (~f-sym ~@arg-syms))))))
+  (if *check-freshness*
+    (let [f-sym (gensym "f")
+          arg-syms (repeatedly (count args) gensym)]
+      `(let [~f-sym ~f
+             ~@(interleave arg-syms args)]
+         (cached [~f-sym ~@arg-syms] (fn [] (~f-sym ~@arg-syms)))))
+    `(cached [] (fn [] (~f ~@args)))))
